@@ -19,11 +19,27 @@ struct ContentView: View {
             ForEach(places) { place in
                 Annotation(place.name, coordinate: place.coordinate) {
                     Image(systemName: "star.circle")
-                    .resizable()
-                    .foregroundStyle(.red)
-                    .frame(width: 44, height: 44)
-                    .background(.white)
-                    .clipShape(.circle)
+                        .resizable()
+                        .foregroundStyle(.red)
+                        .frame(width: 44, height: 44)
+                        .background(.white)
+                        .clipShape(.circle)
+                }
+            }
+        }
+        .onAppear() {
+            findLocation(name: "Springfield")
+        }
+    }
+    
+    func findLocation(name: String) {
+        locationManager.geocoder.geocodeAddressString(name) { (placemarks, error) in
+            if placemarks != nil {
+                for placemark in placemarks! {
+                    let place = Place(name: "\(placemark.name!), \(placemark.administrativeArea!)",
+                                      coordinate: placemark.location!.coordinate)
+                    places.append(place)
+                    
                 }
             }
         }
